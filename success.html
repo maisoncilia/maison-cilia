@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paiement confirmé — Maison Cilia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="success-container">
+  <h1 id="status">⏳ Confirmation en cours...</h1>
+  <p id="details"></p>
+</div>
+
+<script>
+const p = new URLSearchParams(window.location.search);
+
+const data = {
+  date: p.get("date"),
+  time: p.get("time"),
+  firstName: p.get("firstName"),
+  lastName: p.get("lastName"),
+  email: p.get("email"),
+  phone: p.get("phone")
+};
+
+fetch("http://localhost:3000/confirm", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(() => {
+  document.getElementById("status").textContent = "✅ Paiement confirmé";
+  document.getElementById("details").innerHTML = `
+    <strong>Nom :</strong> ${data.firstName} ${data.lastName}<br>
+    <strong>Date :</strong> ${data.date}<br>
+    <strong>Heure :</strong> ${data.time}<br><br>
+    <strong>Adresse :</strong><br>
+    123 Rue du Salon, Paris<br><br>
+    Un message de confirmation vous sera envoyé.
+    <br><br>
+    <a href="booking.html" class="btn-gold">Retour aux rendez-vous</a>
+  `;
+})
+.catch(() => {
+  document.getElementById("status").textContent = "❌ Erreur";
+  document.getElementById("details").textContent =
+    "La confirmation a échoué. Contactez le salon.";
+});
+</script>
+
+</body>
+</html>

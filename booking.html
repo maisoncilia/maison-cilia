@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rendez-vous — Maison Cilia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="main-header">
+  <div class="header-bg">
+    <img src="logo.png" class="site-logo" alt="Maison Cilia logo">
+    <nav class="main-nav">
+      <a href="index.html">Accueil</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html" class="active">Rendez-vous</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page-container">
+
+  <h1>Prendre rendez-vous</h1>
+  <p class="subtitle">Choisissez votre prestation puis un créneau disponible</p>
+
+  <!-- PRESTATIONS -->
+  <section class="card-grid">
+
+    <div class="card">
+      <img src="classique.jpg">
+      <h3>Pose cils à cils / 2D</h3>
+      <span>40 €</span>
+      <button class="btn-gold" onclick="selectService('Pose cils à cils / 2D',40,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="mixte.jpg">
+      <h3>Pose Mixte</h3>
+      <span>50 €</span>
+      <button class="btn-gold" onclick="selectService('Pose Mixte',50,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="volume.jpg">
+      <h3>Pose Russe</h3>
+      <span>60 €</span>
+      <button class="btn-gold" onclick="selectService('Pose Russe',60,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="volume.jpg">
+      <h3>Pose Russe Intense</h3>
+      <span>70 €</span>
+      <button class="btn-gold" onclick="selectService('Pose Russe Intense',70,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="classique.jpg">
+      <h3>Dépose</h3>
+      <span>10 €</span>
+      <button class="btn-gold" onclick="selectService('Dépose',10,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="classique.jpg">
+      <h3>Épilation sourcils</h3>
+      <span>5 €</span>
+      <button class="btn-gold" onclick="selectService('Épilation sourcils',5,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="classique.jpg">
+      <h3>Épilation duvet</h3>
+      <span>5 €</span>
+      <button class="btn-gold" onclick="selectService('Épilation duvet',5,this)">Choisir</button>
+    </div>
+
+    <div class="card">
+      <img src="classique.jpg">
+      <h3>Brushing simple</h3>
+      <span>15 €</span>
+      <button class="btn-gold" onclick="selectService('Brushing simple',15,this)">Choisir</button>
+    </div>
+
+  </section>
+
+  <!-- CALENDRIER -->
+  <section class="calendar">
+    <h2>Choisissez un créneau</h2>
+    <div class="calendar-grid" id="calendar"></div>
+
+    <br>
+    <button class="btn-gold" onclick="pay()">Confirmer & payer 10 €</button>
+
+    <p style="margin-top:10px;font-size:13px;color:#777;">
+      Acompte non remboursable. Solde à régler sur place.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Maison Cilia — Lash Artist
+</footer>
+
+<script>
+let selectedSlot = null;
+let selectedService = null;
+
+/* ====== SERVICE ====== */
+function selectService(name, price, btn) {
+  selectedService = { name, price };
+
+  document.querySelectorAll(".card .btn-gold")
+    .forEach(b => b.classList.remove("selected"));
+
+  btn.classList.add("selected");
+}
+
+/* ====== CALENDRIER ====== */
+fetch("http://localhost:3000/calendar")
+  .then(res => res.json())
+  .then(slots => {
+    const calendar = document.getElementById("calendar");
+
+    slots.forEach(slot => {
+      const btn = document.createElement("button");
+      btn.textContent = slot.date + " " + slot.time;
+
+      if (slot.booked) btn.disabled = true;
+
+      btn.onclick = () => {
+        document.querySelectorAll("#calendar button")
+          .forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedSlot = slot;
+      };
+
+      calendar.appendChild(btn);
+    });
+  });
+
+/* ====== PAIEMENT ====== */
+function pay() {
+  if (!selectedService) {
+    alert("Veuillez choisir une prestation");
+    return;
+  }
+  if (!selectedSlot) {
+    alert("Veuillez sélectionner un créneau");
+    return;
+  }
+
+  window.location.href =
+    `infos.html?service=${encodeURIComponent(selectedService.name)}&price=${selectedService.price}&date=${selectedSlot.date}&time=${selectedSlot.time}`;
+}
+</script>
+
+</body>
+</html>

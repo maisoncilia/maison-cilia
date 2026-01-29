@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — Maison Cilia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="admin-container">
+
+  <h1>Admin – Maison Cilia</h1>
+  <p class="subtitle">Gestion des rendez-vous</p>
+
+  <!-- MOT DE PASSE -->
+  <input id="password" type="password" placeholder="Mot de passe admin">
+
+  <!-- AJOUT DISPONIBILITÉ -->
+  <h3 class="admin-section-title">Ajouter une disponibilité</h3>
+
+  <input id="date" type="date">
+  <input id="time" type="time">
+
+  <button onclick="addSlot()">Ajouter le créneau</button>
+
+  <!-- LISTE RÉSERVATIONS -->
+  <h3 class="admin-section-title">Réservations</h3>
+  <div id="list" class="admin-list"></div>
+
+</main>
+
+<script>
+function addSlot() {
+  fetch("http://localhost:3000/admin/add-slot", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": document.getElementById("password").value
+    },
+    body: JSON.stringify({
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value
+    })
+  }).then(() => load());
+}
+
+function deleteSlot(date, time) {
+  if (!confirm("Supprimer ce créneau ?")) return;
+
+  fetch("http://localhost:3000/admin/delete-slot", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": document.getElementById("password").value
+    },
+    body: JSON.stringify({ date, time })
+  }).then(() => load());
+}
+
+function load() {
+  fetch("http://localhost:3000/admin/reservations", {
+    headers: {
+      "Authorization": document.getElementById("password").value
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    data.forEach(s => {
+      list.innerHTML += `
+        <div class="admin-slot ${s.booked ? "booked" : ""}">
+          <strong>${s.date} — ${s.time}</strong><br>
+          ${s.booked ? "❌ Réservé" : "✅ Libre"}
+
+          ${s.client ? `
+            <div class="admin-client">
+              👤 ${s.client.firstName} ${s.client.lastName}<br>
+              ✉️ ${s.client.email}
+            </div>
+          ` : ""}
+
+          <button class="admin-delete"
+            onclick="deleteSlot('${s.date}','${s.time}')">
+            Supprimer
+          </button>
+        </div>
+      `;
+    });
+  });
+}
+</script>
+
+</body>
+</html>

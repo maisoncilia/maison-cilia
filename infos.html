@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Vos informations — Maison Cilia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="main-header">
+  <div class="header-bg">
+    <img src="logo.png" class="site-logo">
+  </div>
+</header>
+
+<main class="page-container">
+
+  <h1>Vos informations</h1>
+  <p class="subtitle">Merci de confirmer votre rendez-vous</p>
+
+  <p><strong>Prestation :</strong> <span id="service"></span></p>
+  <p><strong>Date :</strong> <span id="date"></span></p>
+  <p><strong>Heure :</strong> <span id="time"></span></p>
+
+  <section class="client-section">
+    <div class="client-form">
+      <input id="firstName" placeholder="Prénom *">
+      <input id="lastName" placeholder="Nom *">
+      <input id="email" placeholder="Email">
+      <input id="phone" placeholder="Téléphone">
+    </div>
+
+    <button class="btn-gold" onclick="pay()">Payer 10 €</button>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Maison Cilia — Lash Artist
+</footer>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const service = params.get("service");
+const price   = params.get("price");
+const date    = params.get("date");
+const time    = params.get("time");
+
+document.getElementById("service").textContent = service;
+document.getElementById("date").textContent = date;
+document.getElementById("time").textContent = time;
+
+function pay() {
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName  = document.getElementById("lastName").value.trim();
+  const email     = document.getElementById("email").value.trim();
+  const phone     = document.getElementById("phone").value.trim();
+
+  if (!firstName || !lastName || (!email && !phone)) {
+    alert("Veuillez remplir les informations requises");
+    return;
+  }
+
+  fetch("http://localhost:3000/create-checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      service,
+      price,
+      date,
+      time,
+      firstName,
+      lastName,
+      email,
+      phone
+    })
+  })
+  .then(res => res.json())
+  .then(data => window.location.href = data.url);
+}
+</script>
+
+</body>
+</html>
