@@ -32,7 +32,7 @@
 
 <script>
 function addSlot() {
-  fetch("http://localhost:3000/admin/add-slot", {
+  fetch("https://maison-cilia-backend.onrender.com/admin/add-slot", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +48,7 @@ function addSlot() {
 function deleteSlot(date, time) {
   if (!confirm("Supprimer ce créneau ?")) return;
 
-  fetch("http://localhost:3000/admin/delete-slot", {
+  fetch("https://maison-cilia-backend.onrender.com/admin/delete-slot", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function deleteSlot(date, time) {
 }
 
 function load() {
-  fetch("http://localhost:3000/admin/reservations", {
+  fetch("https://maison-cilia-backend.onrender.com/admin/reservations", {
     headers: {
       "Authorization": document.getElementById("password").value
     }

@@ -120,7 +120,7 @@ function selectService(name, price, btn) {
 }
 
 /* ====== CALENDRIER ====== */
-fetch("http://localhost:3000/calendar")
+fetch("https://maison-cilia-backend.onrender.com/calendar")
   .then(res => res.json())
   .then(slots => {
     const calendar = document.getElementById("calendar");

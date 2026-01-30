@@ -25,7 +25,7 @@ const data = {
   phone: p.get("phone")
 };
 
-fetch("http://localhost:3000/confirm", {
+fetch("https://maison-cilia-backend.onrender.com/confirm", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(data)
