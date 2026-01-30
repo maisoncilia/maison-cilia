@@ -62,7 +62,7 @@ function pay() {
     return;
   }
 
-  fetch("http://localhost:3000/create-checkout", {
+  fetch("https://maison-cilia-backend.onrender.com/create-checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
